@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+   
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #007bff, #e0eafc);
+      color: #333;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .dashboard-container {
+      width: 90%;
+      max-width: 700px;
+      margin: 80px auto;
+      padding: 40px;
+      background: #e1e1e1;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.8s ease;
+    }
+
+    h2 {
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    h3 {
+      color: #444;
+      margin: 20px 0;
+      font-weight: 500;
+    }
+.complete-link {
+    color: #4CAF50;   
+    font-weight: bold;
+}
+
+.delete-link {
+    color: #FF4444;   
+    font-weight: bold;
+}
+
+.complete-link:hover {
+    color: #2e7d32;
+}
+
+.delete-link:hover {
+    color: #cc0000;
+}
+
+    .logout-btn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      background: linear-gradient(45deg, #ff4d4d, #ff6b6b);
+      padding: 10px 18px;
+      color: white;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: all 0.2s ease;
+    }
+
+    .logout-btn:hover {
+      transform: scale(1.07);
+      background: linear-gradient(45deg, #e63939, #ff4949);
+    }
+
+  
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background: #aed4fd;
+      border-radius: 12px;
+      padding: 15px 20px;
+      margin-bottom: 10px;
+      text-align: left;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+    }
+
+    li:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+    }
+
+    li b {
+      color: #222;
+      font-size: 1rem;
+    }
+
+    .floating-add-btn {
+      position: fixed;
+      bottom: 40px;
+      right: 40px;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(45deg, #007bff, #00aaff);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      font-size: 28px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      z-index: 100;
+    }
+
+    .floating-add-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    }
+
+    /* 🧾 Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 200;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.4);
+      backdrop-filter: blur(3px);
+    }
+
+    .modal-content {
+      background: #fff;
+      margin: 10% auto;
+      padding: 30px 40px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      animation: slideDown 0.4s ease;
+      text-align: center;
+    }
+
+    .close-btn {
+      color: #aaa;
+      float: right;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close-btn:hover {
+      color: #000;
+    }
+
+    input, textarea, button {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    textarea {
+      resize: none;
+      height: 80px;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+      outline: none;
+    }
+
+    button.submit-btn {
+      background: linear-gradient(45deg, #007bff, #00aaff);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    button.submit-btn:hover {
+      background: linear-gradient(45deg, #0056b3, #007bbf);
+      transform: scale(1.05);
+    }
+
+  
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+
+  <div class="dashboard-container">
+    <h2>Welcome, {{ current_user.username }}</h2>
+    <h2><u>Todo-List</u></h2>
+    <br>
+    <ul>
+      {% for task in tasks %}
+        <li>
+          <b>{{ task.title }}</b> -
+          {% if task.completed %}
+            ✅ Completed
+          {% else %}
+            ⏳ Pending
+          {% endif %}
+          <br>
+          Due: {{ task.due_date.strftime('%Y-%m-%d %H:%M') if task.due_date else 'No due date' }}
+          <br>
+          {{ task.description }}
+          <br>
+            <a href="{{ url_for('update_task', task_id=task.id) }}" class="complete-link">Task Completed</a> |
+            <a href="{{ url_for('delete_task', task_id=task.id) }}" class="delete-link">Delete</a>
+
+        </li>
+      {% else %}
+        <li>No tasks yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <button class="floating-add-btn" id="openModalBtn">+</button>
+
+  <div id="taskModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" id="closeModalBtn">&times;</span>
+      <h3>Add New Task</h3>
+      <form method="POST" action="{{ url_for('add_task') }}">
+        <input type="text" name="title" placeholder="Task title" required>
+        <textarea name="description" placeholder="Description"></textarea>
+        <input type="date" name="due_date_date" required>
+        <input type="time" name="due_date_time" required>
+        <button type="submit" class="submit-btn">Add Task</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById("taskModal");
+    const openBtn = document.getElementById("openModalBtn");
+    const closeBtn = document.getElementById("closeModalBtn");
+
+    openBtn.onclick = () => { modal.style.display = "block"; };
+    closeBtn.onclick = () => { modal.style.display = "none"; };
+    window.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
+
+    document.addEventListener("DOMContentLoaded", function() {
+      {% for task in tasks %}
+        {% if task.due_date and not task.completed %}
+          (function() {
+            const due = new Date("{{ task.due_date.isoformat() }}");
+            const now = new Date();
+            if (due - now < 3600000 && due > now) {
+              alert("⏰ Reminder: Task '{{ task.title | escape }}' is due soon at {{ task.due_date.strftime ('%Y-%m-%d %H:%M') }}!");
+            }
+          })();
+        {% endif %}
+      {% endfor %}
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      background: linear-gradient(to right, #007bff, #e0eafc);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      flex-direction: column;
+      font-family: Arial, sans-serif;
+    }
+    h1 {
+      color: black;
+      font-size: 3em;
+      margin-bottom: 0.5em;
+    }
+    p {
+      color: black;
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <div class="splash-container">
+    <h1>📝 To-Do Manager</h1>
+    <p>Organize your day — stay productive!</p>
+    <p>Loading....</p>
+  </div>
+
+  <script>
+    
+    setTimeout(function() {
+      window.location.href = "{{ url_for('login') }}";
+    }, 1000);
+  </script>
+</body>
+</html>
